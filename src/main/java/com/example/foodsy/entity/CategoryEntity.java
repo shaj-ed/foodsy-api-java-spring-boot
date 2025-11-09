@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data // Generate getter, setter, toString, equals and hashCode
 @NoArgsConstructor // Generate no args constructor
 @AllArgsConstructor // Generate all args constructor
@@ -28,6 +31,9 @@ public class CategoryEntity {
 
     @OneToOne(mappedBy = "categoryEntity", cascade = CascadeType.ALL, orphanRemoval = true, optional = true)
     private ImageEntity imageEntity;
+
+    @OneToMany(mappedBy = "categoryEntity", cascade = CascadeType.ALL)
+    private List<ProductEntity> productEntity = new ArrayList<>();
 
     public CategoryEntity(Long id, String categoryName, String description) {
         this.id = id;

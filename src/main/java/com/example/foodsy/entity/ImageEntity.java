@@ -31,6 +31,10 @@ public class ImageEntity {
     @JoinColumn(name = "category_id")
     private CategoryEntity categoryEntity;
 
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private ProductEntity productEntity;
+
     public ImageEntity(String originalFilename, String contentType, byte[] bytes,
                        CategoryEntity categoryEntity) {
         this.file_name = originalFilename;

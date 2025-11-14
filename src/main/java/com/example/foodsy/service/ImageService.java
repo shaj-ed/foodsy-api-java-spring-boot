@@ -9,4 +9,6 @@ import java.util.List;
 public interface ImageService {
     ImageEntity uploadImage(Long categoryId, MultipartFile file) throws IOException;
     List<ImageEntity> uploadProductImages(Long productId, List<MultipartFile> files) throws IOException;
+    ImageEntity updateCategoryImage(Long categoryId, MultipartFile file) throws IOException;
+    void updateProductImages(Long productId, List<MultipartFile> files) throws IOException;
 }

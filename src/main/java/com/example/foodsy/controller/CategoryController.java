@@ -3,6 +3,7 @@ package com.example.foodsy.controller;
 import com.example.foodsy.dto.CategoryDTO;
 import com.example.foodsy.dto.CategoryResponseDTO;
 import com.example.foodsy.entity.CategoryEntity;
+import com.example.foodsy.entity.ImageEntity;
 import com.example.foodsy.mapper.CategoryMapper;
 import com.example.foodsy.service.CategoryService;
 import com.example.foodsy.service.ImageService;
@@ -36,7 +37,7 @@ public class CategoryController {
     }
 
     @PostMapping("/{id}/upload")
-    public ResponseEntity<String> uploadCategoryImage(@PathVariable Long id, @RequestPart("files") MultipartFile file) throws IOException {
+    public ResponseEntity<String> uploadCategoryImage(@PathVariable Long id, @RequestPart("file") MultipartFile file) throws IOException {
         imageService.uploadImage(id, file);
         return new ResponseEntity<>("Successful", HttpStatus.OK);
     }
@@ -80,5 +81,19 @@ public class CategoryController {
                 "message", "Successfully updated",
                 "data", CategoryMapper.toDto(category)
         ));
+    }
+
+    @PutMapping("/{id}/upload")
+    public ResponseEntity<?> updateImage(@PathVariable Long id, @RequestPart("file") MultipartFile file) {
+        try {
+            ImageEntity imageEntity = imageService.updateCategoryImage(id, file);
+            return ResponseEntity.ok(Map.of(
+                    "message", "successfully updated",
+                    "data", imageEntity.getData()
+            ));
+        } catch (RuntimeException | IOException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", e.getMessage()));
+        }
     }
 }

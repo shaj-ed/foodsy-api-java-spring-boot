@@ -64,4 +64,52 @@ public class ImageServiceImpl implements ImageService {
         productEntity.getImageEntity().addAll(imageEntities);
         return imageRepository.saveAll(imageEntities);
     }
+
+    @Override
+    public ImageEntity updateCategoryImage(Long categoryId, MultipartFile file) throws IOException {
+        CategoryEntity categoryEntity = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        ImageEntity existingImage = categoryEntity.getImageEntity();
+
+        if(existingImage != null) { // has image
+            existingImage.setFile_name(file.getOriginalFilename());
+            existingImage.setFile_type(file.getContentType());
+            existingImage.setData(file.getBytes());
+            imageRepository.save(existingImage);
+
+            return  existingImage;
+        } else { // don't have image
+            ImageEntity image = new ImageEntity();
+            image.setFile_name(file.getOriginalFilename());
+            image.setFile_type(file.getContentType());
+            image.setData(file.getBytes());
+            image.setCategoryEntity(categoryEntity);
+            imageRepository.save(image);
+
+            categoryEntity.setImageEntity(image);
+            categoryRepository.save(categoryEntity);
+
+            return  image;
+        }
+    }
+
+    @Override
+    public void updateProductImages(Long productId, List<MultipartFile> files) throws IOException {
+        ProductEntity productEntity = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        productEntity.getImageEntity().clear();
+
+        for(MultipartFile file: files) {
+            ImageEntity image = new ImageEntity();
+            image.setFile_type(file.getContentType());
+            image.setFile_name(file.getOriginalFilename());
+            image.setData(file.getBytes());
+            image.setProductEntity(productEntity);
+
+            productEntity.getImageEntity().add(image);
+        }
+
+        productRepository.save(productEntity);
+    }
 }

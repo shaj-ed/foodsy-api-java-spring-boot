@@ -1,5 +1,7 @@
 package com.example.foodsy.controller;
 
+import com.example.foodsy.dto.AuthResponse;
+import com.example.foodsy.dto.LoginRequestDTO;
 import com.example.foodsy.dto.UserRequestDTO;
 import com.example.foodsy.entity.UserEntity;
 import com.example.foodsy.mapper.UserMapper;
@@ -32,13 +34,9 @@ public class AuthController {
         ));
     }
 
-    @PostMapping("/test")
-    public ResponseEntity<?> test(@Valid @RequestBody UserRequestDTO userRequestDTO) {
-        UserEntity userEntity =  authService.createUser(UserMapper.toEntity(userRequestDTO));
-
-        return ResponseEntity.ok(Map.of(
-                "success", true,
-                "data", UserMapper.toResponse(userEntity)
-        ));
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
+        AuthResponse authResponse =  authService.verifyUser(loginRequestDTO);
+        return ResponseEntity.ok(authResponse);
     }
 }

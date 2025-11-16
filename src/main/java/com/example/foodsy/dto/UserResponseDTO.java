@@ -13,7 +13,6 @@ public class UserResponseDTO {
     private Long id;
     private String username;
     private String email;
-    private String password;
     private String phoneNumber;
     private String address;
     private LocalDateTime createdAt;

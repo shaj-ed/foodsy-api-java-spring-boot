@@ -20,7 +20,6 @@ public class UserMapper {
         userResponseDTO.setId(userEntity.getId());
         userResponseDTO.setUsername(userEntity.getUsername());
         userResponseDTO.setEmail(userEntity.getEmail());
-        userResponseDTO.setPassword(userEntity.getPassword());
         userResponseDTO.setPhoneNumber(userEntity.getPhoneNumber());
         userResponseDTO.setAddress(userEntity.getAddress());
         userResponseDTO.setCreatedAt(userEntity.getCreatedAt());

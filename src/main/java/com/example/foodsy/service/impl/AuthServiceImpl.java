@@ -3,6 +3,7 @@ package com.example.foodsy.service.impl;
 import com.example.foodsy.dto.AuthResponse;
 import com.example.foodsy.dto.LoginRequestDTO;
 import com.example.foodsy.entity.UserEntity;
+import com.example.foodsy.exception.DuplicateResourceException;
 import com.example.foodsy.repository.UserRepository;
 import com.example.foodsy.service.AuthService;
 import com.example.foodsy.utils.JwtUtil;
@@ -33,7 +34,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public UserEntity createUser(UserEntity userEntity) {
         if(userRepository.existsByEmail(userEntity.getEmail())) {
-            throw new RuntimeException("Email already exist");
+            throw new DuplicateResourceException("Email already exist");
+        }
+
+        if(userRepository.existsByUsername(userEntity.getUsername())) {
+            throw new DuplicateResourceException("Username already exist");
         }
 
         userEntity.setPassword(encoder().encode(userEntity.getPassword()));

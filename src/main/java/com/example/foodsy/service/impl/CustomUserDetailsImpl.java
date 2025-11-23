@@ -12,11 +12,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CustomUserDetailsImpl implements UserDetails {
+    private final Long id;
     private final String username;
     private final String password;
     private final List<GrantedAuthority> grantedAuthorities;
 
     public CustomUserDetailsImpl(UserEntity userInfo) {
+        id = userInfo.getId();
         username = userInfo.getUsername();
         password = userInfo.getPassword();
         grantedAuthorities = Arrays.stream(userInfo.getRole().split(","))
@@ -27,6 +29,10 @@ public class CustomUserDetailsImpl implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return grantedAuthorities;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     @Override

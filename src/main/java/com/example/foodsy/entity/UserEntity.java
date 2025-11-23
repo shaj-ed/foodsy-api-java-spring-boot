@@ -48,6 +48,9 @@ public class UserEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Carts cart;
+
     @PrePersist
     protected void onCreate() {
         if(this.role == null) {

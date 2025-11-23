@@ -39,6 +39,9 @@ public class ProductEntity {
     @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ImageEntity> imageEntity = new ArrayList<>();
 
+    @OneToMany(mappedBy = "productEntity")
+    private List<CartItemsEntity> cartItemsEntities = new ArrayList<>();
+
     @NotNull(message = "Category is required")
     @ManyToOne
     @JoinColumn(name = "category_id")

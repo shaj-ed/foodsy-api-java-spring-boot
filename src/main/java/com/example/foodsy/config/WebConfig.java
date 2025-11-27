@@ -17,6 +17,7 @@ public class WebConfig {
         config.setAllowedOrigins(List.of("http://localhost:5173")); // your frontend
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
+        config.setExposedHeaders(List.of("Authorization"));
         config.setAllowCredentials(true); // needed if using Authorization header or cookies
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

@@ -6,12 +6,14 @@ import com.example.foodsy.dto.UserResponseDTO;
 import com.example.foodsy.entity.UserEntity;
 import com.example.foodsy.mapper.UserMapper;
 import com.example.foodsy.service.UserService;
+import com.example.foodsy.service.impl.CustomUserDetailsImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -79,5 +81,14 @@ public class UserController {
     public ResponseEntity<?> deleteUserById(@PathVariable Long id) {
         userService.deleteUserById(id);
         return ResponseEntity.ok(Map.of("message", "Successfully deleted"));
+    }
+
+    @GetMapping("current-user")
+    public ResponseEntity<?> getCurrentLoggedInUser(@AuthenticationPrincipal CustomUserDetailsImpl user) {
+        UserEntity userEntity = userService.getUserById(user.getId());
+        return ResponseEntity.ok(Map.of(
+                "message", "Logged in user",
+                "data", UserMapper.toResponse(userEntity)
+        ));
     }
 }

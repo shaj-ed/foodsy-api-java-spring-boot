@@ -1,8 +1,7 @@
 package com.example.foodsy.utils;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.example.foodsy.exception.JwtExpireException;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -26,29 +25,39 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(jwtSecretKey.getBytes());
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateAccessToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        return generateToken(claims, userDetails.getUsername());
+        return generateToken(claims, userDetails.getUsername(),60 * 60 * 1000); // 1 Hour
     }
 
-    public String generateToken(Map<String, Object> claims, String username) {
+    public String generateRefreshToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        return generateToken(claims, userDetails.getUsername(),7L * 24 * 60 * 60 * 1000); // 7 Days
+    }
+
+    public String generateToken(Map<String, Object> claims, String username, long expirationMillis) {
         return Jwts.builder()
                 .claims()
                 .add(claims)
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 60 * 60))
+                .expiration(new Date(System.currentTimeMillis() + expirationMillis))
                 .and()
                 .signWith(getSigningKey())
                 .compact();
     }
 
     private Claims extracAllClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+        try {
+            return Jwts.parser()
+                    .verifyWith(getSigningKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (JwtException e) {
+            throw new JwtExpireException(e.getMessage() + "JWT Expired");
+        }
+
     }
 
     public <T> T extractClaims(String token, Function<Claims, T> claimsTFunction) {
@@ -69,7 +78,11 @@ public class JwtUtil {
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
-        String username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        try {
+            String username = extractUsername(token);
+            return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        } catch (JwtException e) {
+            throw new JwtExpireException(e.getMessage() + "JWT Expired");
+        }
     }
 }

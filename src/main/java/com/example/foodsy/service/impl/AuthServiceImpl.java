@@ -7,11 +7,13 @@ import com.example.foodsy.exception.DuplicateResourceException;
 import com.example.foodsy.repository.UserRepository;
 import com.example.foodsy.service.AuthService;
 import com.example.foodsy.utils.JwtUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     AuthenticationManager authenticationManager;
+
+    @Autowired
+    UserDetailsService userDetailsService;
 
     @Autowired
     JwtUtil jwtUtil;
@@ -46,7 +51,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse verifyUser(LoginRequestDTO loginRequestDTO) {
+    public AuthResponse verifyUser(LoginRequestDTO loginRequestDTO, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequestDTO.getUsername(),
                         loginRequestDTO.getPassword()));
@@ -54,10 +59,26 @@ public class AuthServiceImpl implements AuthService {
         if(authentication.isAuthenticated()) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             UserEntity user = userRepository.findByUsername(userDetails.getUsername());
-            String token = jwtUtil.generateToken(userDetails);
-            return new AuthResponse(token, user.getUsername(), "Successful");
+            String accessToken = jwtUtil.generateAccessToken(userDetails);
+            String refreshToken = jwtUtil.generateRefreshToken(userDetails);
+            return new AuthResponse(accessToken, refreshToken, user.getUsername(), "Successful");
         } else {
             return new AuthResponse("Validation failed");
         }
+    }
+
+    @Override
+    public String refreshAccessToken(String refreshToken) {
+        String username = jwtUtil.extractUsername(refreshToken);
+        UserDetails user = userDetailsService.loadUserByUsername(username);
+        Boolean isValid = jwtUtil.validateToken(refreshToken, user);
+
+        if(!isValid) {
+            throw new RuntimeException("Token expired");
+        }
+
+        String accessToken = jwtUtil.generateAccessToken(user);
+
+        return accessToken;
     }
 }

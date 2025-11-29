@@ -6,13 +6,13 @@ import com.example.foodsy.dto.UserRequestDTO;
 import com.example.foodsy.entity.UserEntity;
 import com.example.foodsy.mapper.UserMapper;
 import com.example.foodsy.service.AuthService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -35,8 +35,27 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
-        AuthResponse authResponse =  authService.verifyUser(loginRequestDTO);
-        return ResponseEntity.ok(authResponse);
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO, HttpServletResponse response) {
+        AuthResponse authResponse =  authService.verifyUser(loginRequestDTO, response);
+
+        ResponseCookie refreshCookie = ResponseCookie.from("foodsy_refresh_token", authResponse.getRefreshToken())
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("Lax")
+                .path("/")
+                .maxAge(7 * 24 * 60 * 60) // 7 Days
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .body(authResponse);
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshAccessToken(@CookieValue(name = "foodsy_refresh_token") String refreshToken) {
+        String accessToken = authService.refreshAccessToken(refreshToken);
+        return ResponseEntity.ok(Map.of(
+                "accessToken", accessToken
+        ));
     }
 }

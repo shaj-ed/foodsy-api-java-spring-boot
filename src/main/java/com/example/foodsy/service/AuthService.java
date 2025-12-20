@@ -9,4 +9,5 @@ public interface AuthService {
     UserEntity createUser(UserEntity userEntity);
     AuthResponse verifyUser(LoginRequestDTO loginRequestDTO, HttpServletResponse response);
     String refreshAccessToken(String refreshToken);
+    void logout(String refreshToken, HttpServletResponse response);
 }

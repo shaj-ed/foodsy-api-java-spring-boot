@@ -58,4 +58,12 @@ public class AuthController {
                 "accessToken", accessToken
         ));
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@CookieValue(name = "foodsy_refresh_token") String refreshToke, HttpServletResponse response) {
+        authService.logout(refreshToke,response);
+        return ResponseEntity.ok(Map.of(
+                "message", "Logout successful"
+        ));
+    }
 }

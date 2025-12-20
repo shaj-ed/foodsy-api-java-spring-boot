@@ -4,11 +4,14 @@ import com.example.foodsy.dto.AuthResponse;
 import com.example.foodsy.dto.LoginRequestDTO;
 import com.example.foodsy.entity.UserEntity;
 import com.example.foodsy.exception.DuplicateResourceException;
+import com.example.foodsy.exception.JwtExpireException;
 import com.example.foodsy.repository.UserRepository;
 import com.example.foodsy.service.AuthService;
 import com.example.foodsy.utils.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -74,11 +77,32 @@ public class AuthServiceImpl implements AuthService {
         Boolean isValid = jwtUtil.validateToken(refreshToken, user);
 
         if(!isValid) {
-            throw new RuntimeException("Token expired");
+            throw new JwtExpireException("Token expired");
         }
 
         String accessToken = jwtUtil.generateAccessToken(user);
 
         return accessToken;
+    }
+
+    @Override
+    public void logout(String refreshToken, HttpServletResponse response) {
+        String username = jwtUtil.extractUsername(refreshToken);
+        UserDetails user = userDetailsService.loadUserByUsername(username);
+        Boolean isValid = jwtUtil.validateToken(refreshToken, user);
+
+        if(!isValid) {
+            throw new JwtExpireException("Token expired");
+        }
+
+        ResponseCookie deleteCookie = ResponseCookie.from("foodsy_refresh_token", "")
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("Strict")
+                .path("/")
+                .maxAge(0)
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, deleteCookie.toString());
     }
 }

@@ -98,7 +98,7 @@ public class AuthServiceImpl implements AuthService {
         ResponseCookie deleteCookie = ResponseCookie.from("foodsy_refresh_token", "")
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("Strict")
+                .sameSite("None")
                 .path("/")
                 .maxAge(0)
                 .build();

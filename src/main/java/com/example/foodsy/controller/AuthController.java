@@ -41,7 +41,7 @@ public class AuthController {
         ResponseCookie refreshCookie = ResponseCookie.from("foodsy_refresh_token", authResponse.getRefreshToken())
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("Lax")
+                .sameSite("None")
                 .path("/")
                 .maxAge(7 * 24 * 60 * 60) // 7 Days
                 .build();

@@ -41,8 +41,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "api/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/refresh-token").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/category").permitAll()
                         .anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults())
+//                .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

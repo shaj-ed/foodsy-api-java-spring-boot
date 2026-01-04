@@ -16,4 +16,5 @@ public interface ProductService {
     ProductEntity getProductById(Long id);
     List<byte[]> getSingleProductImages(Long id);
     Page<ProductEntity> getProducts(Pageable pageable);
+    Page<ProductEntity> getProductsByCategory(Long categoryId, Pageable pageable);
 }

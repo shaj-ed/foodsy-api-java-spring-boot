@@ -83,9 +83,17 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getProducts(int page, int limit) {
+    public ResponseEntity<?> getProducts(@RequestParam(defaultValue = "0") int page,
+                                         @RequestParam(defaultValue = "10") int limit,
+                                         @RequestParam(required = false) Long categoryId) {
         Pageable pageable = PageRequest.of(page, limit);
-        Page<ProductEntity> productPage = productService.getProducts(pageable);
+        Page<ProductEntity> productPage;
+
+        if(categoryId != null) {
+            productPage = productService.getProductsByCategory(categoryId, pageable);
+        } else {
+            productPage = productService.getProducts(pageable);
+        }
 
         if(productPage.isEmpty()) {
             return ResponseEntity.ok(Map.of("message", "No product found",

@@ -92,4 +92,9 @@ public class ProductServiceImpl implements ProductService {
     public Page<ProductEntity> getProducts(Pageable pageable) {
         return productRepository.findAll(pageable);
     }
+
+    @Override
+    public Page<ProductEntity> getProductsByCategory(Long categoryId, Pageable pageable) {
+        return productRepository.findByCategoryEntity_Id(categoryId, pageable);
+    }
 }

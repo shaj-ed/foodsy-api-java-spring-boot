@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -85,15 +86,13 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<?> getProducts(@RequestParam(defaultValue = "0") int page,
                                          @RequestParam(defaultValue = "10") int limit,
-                                         @RequestParam(required = false) Long categoryId) {
+                                         @RequestParam(required = false) Long categoryId,
+                                         @RequestParam(required = false) BigDecimal minPrice,
+                                         @RequestParam(required = false) BigDecimal maxPrice) {
         Pageable pageable = PageRequest.of(page, limit);
         Page<ProductEntity> productPage;
 
-        if(categoryId != null) {
-            productPage = productService.getProductsByCategory(categoryId, pageable);
-        } else {
-            productPage = productService.getProducts(pageable);
-        }
+        productPage = productService.getProducts(categoryId, minPrice, maxPrice, pageable);
 
         if(productPage.isEmpty()) {
             return ResponseEntity.ok(Map.of("message", "No product found",

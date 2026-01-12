@@ -7,6 +7,7 @@ import com.example.foodsy.entity.ProductEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProductService {
@@ -15,6 +16,5 @@ public interface ProductService {
     void deleteProductById(Long id);
     ProductEntity getProductById(Long id);
     List<byte[]> getSingleProductImages(Long id);
-    Page<ProductEntity> getProducts(Pageable pageable);
-    Page<ProductEntity> getProductsByCategory(Long categoryId, Pageable pageable);
+    Page<ProductEntity> getProducts(Long categoryId, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
 }

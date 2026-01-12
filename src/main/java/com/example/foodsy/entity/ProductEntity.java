@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class ProductEntity {
     @NotNull(message = "Price is required")
     @Positive(message = "Price must be greater than zero")
     @Column(name = "price", nullable = false)
-    private Integer price;
+    private BigDecimal price;
 
     @NotBlank(message = "A description is required")
     @Size(min = 10, max = 30, message = "Description must be between 10 to 30 characters")

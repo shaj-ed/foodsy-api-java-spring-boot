@@ -16,12 +16,17 @@ public class ProductMapper {
     }
 
     public static ProductResponseDTO toResponse(ProductEntity productEntity) {
+        byte[] image = new byte[0];
+        if(productEntity.getImageEntity() != null) {
+            image = productEntity.getImageEntity().getFirst().getData();
+        }
         ProductResponseDTO productResponseDTO = new ProductResponseDTO();
         productResponseDTO.setId(productEntity.getId());
         productResponseDTO.setProductName(productEntity.getProduct_name());
         productResponseDTO.setPrice(productEntity.getPrice());
         productResponseDTO.setDescription(productEntity.getDescription());
         productResponseDTO.setCategoryId(productEntity.getCategoryEntity().getId());
+        productResponseDTO.setImage(image);
         productResponseDTO.setCreatedAt(productEntity.getCreated_at());
         return productResponseDTO;
     }

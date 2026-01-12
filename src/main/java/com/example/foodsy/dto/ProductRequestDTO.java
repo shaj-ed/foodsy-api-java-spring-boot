@@ -6,13 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductRequestDTO {
     private String productName;
     private String description;
-    private Integer price;
+    private BigDecimal price;
     @NotNull(message = "Category id is required")
     private Long categoryId;
 }

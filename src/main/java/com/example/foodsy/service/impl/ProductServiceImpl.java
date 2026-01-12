@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -89,12 +90,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductEntity> getProducts(Pageable pageable) {
-        return productRepository.findAll(pageable);
-    }
-
-    @Override
-    public Page<ProductEntity> getProductsByCategory(Long categoryId, Pageable pageable) {
-        return productRepository.findByCategoryEntity_Id(categoryId, pageable);
+    public Page<ProductEntity> getProducts(Long categoryId, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable) {
+        return productRepository.findProducts(categoryId, minPrice, maxPrice, pageable);
     }
 }

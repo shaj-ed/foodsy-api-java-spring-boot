@@ -1,5 +1,6 @@
 package com.example.foodsy.service.impl;
 
+import com.example.foodsy.dto.CreateProductResponse;
 import com.example.foodsy.dto.ProductRequestDTO;
 import com.example.foodsy.dto.ProductResponseDTO;
 import com.example.foodsy.entity.CategoryEntity;
@@ -28,13 +29,13 @@ public class ProductServiceImpl implements ProductService {
     CategoryRepository categoryRepository;
 
     @Override
-    public ProductResponseDTO createProduct(ProductRequestDTO productRequestDTO) {
+    public CreateProductResponse createProduct(ProductRequestDTO productRequestDTO) {
         CategoryEntity category = categoryRepository.findById(productRequestDTO.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
         ProductEntity productEntity = ProductMapper.toEntity(productRequestDTO, category);
         ProductEntity saved = productRepository.save(productEntity);
-        return ProductMapper.toResponse(saved);
+        return ProductMapper.toCreateProductResponse(saved);
     }
 
     @Override

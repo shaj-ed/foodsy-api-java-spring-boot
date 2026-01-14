@@ -1,5 +1,6 @@
 package com.example.foodsy.service;
 
+import com.example.foodsy.dto.CreateProductResponse;
 import com.example.foodsy.dto.ProductRequestDTO;
 import com.example.foodsy.dto.ProductResponseDTO;
 import com.example.foodsy.entity.ImageEntity;
@@ -11,7 +12,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProductService {
-    ProductResponseDTO createProduct(ProductRequestDTO product);
+    CreateProductResponse createProduct(ProductRequestDTO product);
     ProductResponseDTO updateProduct(Long id, ProductRequestDTO productRequestDTO);
     void deleteProductById(Long id);
     ProductEntity getProductById(Long id);

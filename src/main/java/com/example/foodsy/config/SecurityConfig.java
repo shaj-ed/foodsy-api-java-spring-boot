@@ -43,6 +43,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/auth/refresh-token").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/category").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/product").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/product/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/product/{id}/images").permitAll()
                         .anyRequest().authenticated())
 //                .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session

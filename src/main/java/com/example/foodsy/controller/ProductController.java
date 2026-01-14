@@ -1,5 +1,6 @@
 package com.example.foodsy.controller;
 
+import com.example.foodsy.dto.CreateProductResponse;
 import com.example.foodsy.dto.ProductRequestDTO;
 import com.example.foodsy.dto.ProductResponseDTO;
 import com.example.foodsy.entity.ImageEntity;
@@ -34,8 +35,8 @@ public class ProductController {
     ImageService imageService;
 
     @PostMapping
-    public ResponseEntity<ProductResponseDTO> createProduct(@Valid @RequestBody ProductRequestDTO productRequestDTO) {
-        ProductResponseDTO product = productService.createProduct(productRequestDTO);
+    public ResponseEntity<CreateProductResponse> createProduct(@Valid @RequestBody ProductRequestDTO productRequestDTO) {
+        CreateProductResponse product = productService.createProduct(productRequestDTO);
 
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
@@ -88,7 +89,7 @@ public class ProductController {
                                          @RequestParam(defaultValue = "10") int limit,
                                          @RequestParam(required = false) Long categoryId,
                                          @RequestParam(required = false) BigDecimal minPrice,
-                                         @RequestParam(required = false) BigDecimal maxPrice) {
+                                         @RequestParam(required = false) BigDecimal maxPrice)   {
         Pageable pageable = PageRequest.of(page, limit);
         Page<ProductEntity> productPage;
 

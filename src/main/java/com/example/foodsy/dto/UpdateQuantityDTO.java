@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateQuantityDTO {
-    @NotNull(message = "Quantity is required")
-    @Min(value = 1, message = "Quantity can't be zero or negative")
+//    @NotNull(message = "Quantity is required")
+//    @Min(value = 1, message = "Quantity can't be zero or negative")
     private Integer quantity;
 }

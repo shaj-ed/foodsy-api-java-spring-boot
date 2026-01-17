@@ -94,7 +94,11 @@ public class CartServiceImpl implements CartService {
         CartItemsEntity cartItem = cartItemsRepository.findByCart_IdAndProductEntity_Id(cart.getId(), productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
-        cartItem.setQuantity(cartItem.getQuantity() + updateQuantityDTO.getQuantity());
+        if(updateQuantityDTO.getQuantity() == 0) {
+            return removeItem(cartItem.getProductEntity().getId(), userId);
+        }
+
+        cartItem.setQuantity(updateQuantityDTO.getQuantity());
         cartItem.setTotalPrice(cartItem.getQuantity() * cartItem.getUnitPrice());
         cartItemsRepository.save(cartItem);
         return CartMapper.toCartResponseDTO(cart, getCartTotalPrice(cart));

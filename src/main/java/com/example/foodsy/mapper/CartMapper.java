@@ -6,6 +6,7 @@ import com.example.foodsy.entity.CartItemsEntity;
 import com.example.foodsy.entity.Carts;
 import com.example.foodsy.repository.CartItemsRepository;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class CartMapper {
                 .build();
     }
 
-    public static CartResponseDTO toCartResponseDTO(Carts cart, Double totalPrice) {
+    public static CartResponseDTO toCartResponseDTO(Carts cart, BigDecimal totalPrice) {
         List<CartItemDTO> cartItems = new ArrayList<>();
         for (CartItemsEntity cartItemsEntity: cart.getCartItemsEntities()) {
             CartItemDTO newCartItemDto = getCartItemDTO(cartItemsEntity);

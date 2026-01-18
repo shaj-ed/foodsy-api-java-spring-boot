@@ -18,6 +18,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -73,12 +74,12 @@ public class CartServiceImpl implements CartService {
             cartItem.setNotes(addItemRequestDTO.getNotes());
             cartItem.setQuantity(addItemRequestDTO.getQuantity());
             cartItem.setProductEntity(product);
-            cartItem.setUnitPrice(Double.valueOf(String.valueOf(product.getPrice())));
+            cartItem.setUnitPrice(product.getPrice());
             cartItem.setCart(cart);
         }
 
         // Update the price
-        cartItem.setTotalPrice(cartItem.getQuantity() * cartItem.getUnitPrice());
+        cartItem.setTotalPrice(cartItem.getUnitPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())));
 
         // Save the product
         cartItemsRepository.save(cartItem);
@@ -99,7 +100,7 @@ public class CartServiceImpl implements CartService {
         }
 
         cartItem.setQuantity(updateQuantityDTO.getQuantity());
-        cartItem.setTotalPrice(cartItem.getQuantity() * cartItem.getUnitPrice());
+        cartItem.setTotalPrice(cartItem.getUnitPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())));
         cartItemsRepository.save(cartItem);
         return CartMapper.toCartResponseDTO(cart, getCartTotalPrice(cart));
     }
@@ -132,10 +133,10 @@ public class CartServiceImpl implements CartService {
         return CartMapper.toCartResponseDTO(cart, getCartTotalPrice(cart));
     }
 
-    private Double getCartTotalPrice(Carts cart) {
-        double total = 0.0;
+    private BigDecimal getCartTotalPrice(Carts cart) {
+        BigDecimal total = BigDecimal.valueOf(0);
         for (CartItemsEntity cartItem: cart.getCartItemsEntities()) {
-            total = total + cartItem.getTotalPrice();
+            total = cartItem.getTotalPrice().add((total));
         }
         return total;
     }

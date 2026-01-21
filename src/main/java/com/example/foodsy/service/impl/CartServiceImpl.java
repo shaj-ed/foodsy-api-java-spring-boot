@@ -109,14 +109,11 @@ public class CartServiceImpl implements CartService {
     public CartResponseDTO getActiveCart(Long userid) {
         UserEntity userEntity = userRepository.findById(userid)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        Carts cart = cartRepository.findByUserEntityAndStatus(userEntity, Carts.STATUS.ACTIVE)
-                .orElseGet(() -> {
-                    Carts newCart = new Carts();
-                    newCart.setUserEntity(userEntity);
-                    newCart.setStatus(Carts.STATUS.ACTIVE);
-                    return cartRepository.save(newCart);
-                });
-        return CartMapper.toCartResponseDTO(cart, getCartTotalPrice(cart));
+        Optional<Carts> cart = cartRepository.findByUserEntityAndStatus(userEntity, Carts.STATUS.ACTIVE);
+        if(cart.isEmpty()) {
+            return CartMapper.empty();
+        }
+        return CartMapper.toCartResponseDTO(cart.get(), getCartTotalPrice(cart.get()));
     }
 
     @Override

@@ -46,6 +46,15 @@ public class Order {
     @Column(name = "total_amount", nullable = false)
     private BigDecimal totalAmount;
 
+    @Column(name = "full_name", nullable = false)
+    private String fullName;
+
+    @Column(name = "phone_number", nullable = false)
+    private String phoneNumber;
+
+    @Column(name = "address", nullable = false)
+    private String address;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

@@ -8,6 +8,7 @@ import com.example.foodsy.repository.CartItemsRepository;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CartMapper {
@@ -25,6 +26,8 @@ public class CartMapper {
 
     public static CartResponseDTO toCartResponseDTO(Carts cart, BigDecimal totalPrice) {
         List<CartItemDTO> cartItems = new ArrayList<>();
+        BigDecimal deliveryCost = BigDecimal.valueOf(80);
+        BigDecimal totalAmount = totalPrice.add(deliveryCost);
         for (CartItemsEntity cartItemsEntity: cart.getCartItemsEntities()) {
             CartItemDTO newCartItemDto = getCartItemDTO(cartItemsEntity);
             cartItems.add(newCartItemDto);
@@ -33,6 +36,8 @@ public class CartMapper {
                 .id(cart.getId())
                 .status(cart.getStatus())
                 .total(totalPrice)
+                .deliveryFee(deliveryCost)
+                .totalAmount(totalAmount)
                 .items(cartItems)
                 .build();
     }
@@ -47,5 +52,16 @@ public class CartMapper {
         newCartItemDto.setTotalPrice(cartItemsEntity.getTotalPrice());
         newCartItemDto.setNotes(cartItemsEntity.getNotes());
         return newCartItemDto;
+    }
+
+    public static CartResponseDTO empty() {
+        return CartResponseDTO.builder()
+                .id(null)
+                .status(Carts.STATUS.ABANDONED)
+                .total(BigDecimal.ZERO)
+                .totalAmount(BigDecimal.ZERO)
+                .deliveryFee(BigDecimal.ZERO)
+                .items(Collections.emptyList())
+                .build();
     }
 }

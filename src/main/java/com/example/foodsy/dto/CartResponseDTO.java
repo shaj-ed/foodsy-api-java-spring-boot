@@ -17,5 +17,7 @@ public class CartResponseDTO {
     private Long id;
     private Carts.STATUS status;
     private BigDecimal total;
+    private BigDecimal deliveryFee;
+    private BigDecimal totalAmount;
     private List<CartItemDTO> items;
 }

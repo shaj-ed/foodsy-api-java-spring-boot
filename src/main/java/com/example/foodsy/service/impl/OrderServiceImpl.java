@@ -55,6 +55,9 @@ public class OrderServiceImpl implements OrderService {
         order.setUserEntity(user);
         order.setStatus(OrderStatus.PENDING);
         order.setPaymentType(orderDTO.getPaymentType());
+        order.setFullName(orderDTO.getFullName());
+        order.setPhoneNumber(orderDTO.getPhoneNumber());
+        order.setAddress(orderDTO.getAddress());
 
         BigDecimal subTotal = BigDecimal.ZERO;
         List<OrderItemsEntity> orderItemsEntities = new ArrayList<>();
@@ -76,6 +79,8 @@ public class OrderServiceImpl implements OrderService {
         order.setSubTotal(subTotal);
         order.setShippingFree(BigDecimal.valueOf(80));
         order.setTotalAmount(subTotal.add(order.getShippingFree()));
+
+        cartRepository.delete(cart);
 
         return OrderMapper.toOrderResponse(orderRepository.save(order));
     }

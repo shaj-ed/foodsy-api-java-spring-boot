@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -51,6 +52,12 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Carts> cart;
+
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+    private List<Conversation> senderConversations = new ArrayList<>();
+
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
+    private List<Conversation> receiverConversations = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {

@@ -8,6 +8,8 @@ public class MessageMapper {
         return ChatMessageDTO.builder()
                 .id(message.getId())
                 .conversationId(message.getConversation().getId())
+                .senderId(message.getSender_id())
+                .receiverId(message.getReceiver_id())
                 .messageText(message.getMessageText())
                 .sendAt(message.getCreatedAt())
                 .build();

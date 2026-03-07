@@ -1,9 +1,12 @@
 package com.example.foodsy.controller;
 
 import com.example.foodsy.dto.ChatMessageDTO;
+import com.example.foodsy.dto.MessageSentDTO;
 import com.example.foodsy.entity.Message;
 import com.example.foodsy.mapper.MessageMapper;
 import com.example.foodsy.service.MessageService;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,11 +17,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/message")
 public class MessageController {
     @Autowired
     private MessageService messageService;
+
+    @PostMapping
+    public ResponseEntity<?> sendMessage(@Valid @RequestBody MessageSentDTO messageSentDTO) {
+        messageService.sentMessage(messageSentDTO);
+        return ResponseEntity.ok(Map.of(
+                "message", "Message send"
+        ));
+    }
 
     @GetMapping("/{conversationId}")
     public ResponseEntity<?> getMessageByConversation(
